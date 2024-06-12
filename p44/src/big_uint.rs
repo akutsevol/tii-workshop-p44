@@ -10,6 +10,12 @@ macro_rules! new_biguints {
                 data: [u64; $words],
             }
 
+            impl Default for $name {
+                fn default() -> Self {
+                    Self::new()
+                }
+            }
+
             impl $name {
                 pub fn new() -> Self {
                     $name { data: [0; $words] }
@@ -61,13 +67,13 @@ macro_rules! new_biguints {
                 pub fn add(&self, other: &Self) -> Self {
                     let mut result = Self::new();
                     let mut carry = 0;
-                
+
                     for i in (0..$words).rev() {
                         let sum = self.data[i].wrapping_add(other.data[i]).wrapping_add(carry);
                         result.data[i] = sum & u64::MAX; // Mask to handle overflow
                         carry = if sum > u64::MAX { 1 } else { 0 }; // Calculate carry
                     }
-                
+
                     result
                 }
 
